@@ -1,60 +1,94 @@
-Hack Assembler (Nand2Tetris) 💻🔢
-A robust, Java-based Two-Pass Assembler built for the Hack Computer Architecture. This project is a core part of the "Nand to Tetris" journey, bridging the gap between symbolic assembly language and executable machine binary.
+# 🖥️ Hack Assembler (Nand2Tetris Project 6)
 
-🚀 Features
-Two-Pass Logic: Correctly handles forward references (Labels) by resolving symbols in the first pass and generating binary in the second.
+A high-performance, **Two-Pass Assembler** implemented in Java for the Hack Computer Architecture. This tool translates symbolic Hack assembly language (`.asm`) into 16-bit binary machine code (`.hack`).
 
-Symbol Management: Includes a dynamic SymbolTable to manage predefined symbols (R0-R15, SCREEN, KBD), labels, and user-defined variables (starting from RAM address 16).
 
-Modular Design: Clean OOP structure separating the Parser, Code (binary generator), and SymbolTable.
 
-Built-in Test Suite: Features a custom FileComparator to verify the accuracy of the generated .hack files against official comparison files.
+## 🌟 Key Features
+- **Two-Pass Translation:** Efficiently resolves forward-referencing labels using a preliminary pass.
+- **Dynamic Symbol Management:** Handles predefined symbols (R0-R15, SCREEN, KBD), labels, and auto-allocates memory for user variables starting from RAM address 16.
+- **Modular OOP Design:** Built with a clean separation of concerns:
+    - `Parser`: Breaks down instructions into components.
+    - `Code`: Generates binary patterns for mnemonics.
+    - `SymbolTable`: Maintains a mapping of names to memory addresses.
+- **Integrated Test Suite:** Includes a custom `FileComparator` tool for automated verification.
 
-📂 Project Structure
-HackAssembler.java: The main entry point that orchestrates the assembly process.
+---
 
-Parser.java: Handles file reading and encapsulates access to the input code.
+## 📂 Project Structure
+| File | Responsibility |
+| :--- | :--- |
+| `HackAssembler.java` | The main driver that executes Pass 1 and Pass 2. |
+| `Parser.java` | Handles logic for reading and stripping comments/whitespace. |
+| `Code.java` | The "Dictionary" that converts mnemonics to binary strings. |
+| `SymbolTable.java` | Stores and retrieves memory addresses for symbols. |
+| `FileComparator.java` | Utility to compare program output with expected results. |
 
-Code.java: Translates Hack mnemonics into their binary representations.
+---
 
-SymbolTable.java: Manages the mapping between symbolic names and numeric addresses.
+## 🚀 Getting Started
 
-FileComparator.java: A utility tool for automated testing.
+### Prerequisites
+- Java Development Kit (JDK) 11 or higher.
 
-🛠️ Installation & Usage
-Compilation
-Compile all Java files using javac:
-
-Bash
+### Compilation
+Compile all source files at once:
+```bash
 javac *.java
-Running the Assembler
-To translate an assembly file (.asm) into binary (.hack), run:
 
-Bash
-java HackAssembler Path/To/YourProgram.asm
-The assembler will automatically generate a file named YourProgram.hack in the same directory.
+# 🖥️ Hack Assembler (Nand2Tetris Project 6)
+
+A high-performance, **Two-Pass Assembler** implemented in Java for the Hack Computer Architecture. This tool translates symbolic Hack assembly language (`.asm`) into 16-bit binary machine code (`.hack`).
+
+---
+
+## 🚀 Usage
+Run the assembler on any `.asm` file from your terminal:
+
+```bash
+java HackAssembler YourProgram.asm
+Note: This will automatically generate a machine-executable YourProgram.hack file in the same directory.
 
 🧪 Testing with FileComparator
-Precision is key in systems programming. To ensure the generated binary matches the official Hack specifications exactly, I've included a FileComparator tool.
+To ensure 100% accuracy, I implemented a custom comparison tool that ignores formatting and focuses purely on the logical bits.
 
-How it works:
-Whitespace Agnostic: The tool automatically strips all whitespaces and newlines before comparison to ensure it focuses purely on the binary logic.
-
-Automated Check: Compares your output with the expected .hack result.
-
-How to use:
-Update the file paths in FileComparator.java.
+Running the Test:
+Open FileComparator.java and set the paths for your output (.hack) and the official comparison file.
 
 Compile and run:
 
 Bash
 javac FileComparator.java
 java FileComparator
-It will output:
+Output ✅:identical.
 
-✅ SUCCESS: Files are identical.
+Output ❌:wrong
 
-❌ FAILURE: Differences found.
+🛠️ Technical Details
+The assembler follows the standard Hack CPU specifications:
 
-🎯 Future Goals
-This project serves as a foundation for understanding Low-Level Software Engineering and Compiler Design. My next steps involve exploring more complex optimizations and building the Virtual Machine (VM) translator for the Hack platform.
+1. A-Instructions
+Formatted as a 16-bit word starting with 0, followed by a 15-bit address:
+0vvvvvvvvvvvvvvv
+
+2. C-Instructions
+Formatted as a 16-bit word starting with 111, followed by the control bits:
+111 + comp (7 bits) + dest (3 bits) + jump (3 bits).
+
+3. Labels & Symbols
+Handled via a Two-Pass strategy:
+
+Pass 1: Scans the code and stores the address of the next instruction for every label (LABEL) in the SymbolTable.
+
+Pass 2: Translates instructions, replacing label and variable symbols with their actual memory addresses.
+
+📂 Project Structure
+HackAssembler.java: Main entry point and orchestration.
+
+Parser.java: Logic for parsing commands and stripping comments.
+
+Code.java: Converts mnemonics to binary strings.
+
+SymbolTable.java: Manages labels, predefined symbols, and variables.
+
+FileComparator.java: Automated testing utility.
